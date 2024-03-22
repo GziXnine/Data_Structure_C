@@ -108,9 +108,6 @@ int main()
   {
     printf("Failed to initialize the stack\n");
   }
-
-  getchar();
-  getchar();
-
+  
   return 0;
 }
