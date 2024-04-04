@@ -1,16 +1,18 @@
 #include "Stack_ds.h"
 
-/*
- * @brief  : Check the status of the stack
- * @param  : myStack => pointer to the stack structure
- * @retval : Return status indicating the current state of the stack
-*/
+/**
+ * @brief  Check the status of the stack
+ * 
+ * @param  myStack Pointer to the stack structure
+ * 
+ * @retval Return status indicating the current state of the stack
+ */
 static stack_status_t stack_status(stack_ds_t *myStack)
 {
   return ((NULL == myStack)?                                STACK_NULL_POINTER : 
           (myStack->ElementCount == myStack->stackMaxSize)? STACK_FULL :
           (myStack->ElementCount == 0)?                     STACK_EMPTY :
-                                                            STACK_NOT_FULL);
+                                                            STACK_HAS_SPACE);
 }
 
 stack_ds_t *stack_create(uint32_t maxSize, stack_status_t *ret_status)
@@ -25,7 +27,7 @@ stack_ds_t *stack_create(uint32_t maxSize, stack_status_t *ret_status)
 
     if(!stackPtr)
     {
-      *ret_status = STACK_NULL_POINTER;
+      *ret_status = NULL_POINTER;
     }
     else
     {
@@ -38,7 +40,7 @@ stack_ds_t *stack_create(uint32_t maxSize, stack_status_t *ret_status)
       {
         free(stackPtr);
         stackPtr = NULL;
-        *ret_status = STACK_NOK;
+        *ret_status = STACK_ALLOC_FAIL;
       }
       else
       {
