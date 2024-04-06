@@ -9,6 +9,7 @@
  * @param array        : The array to search in.
  * @param size         : The size of the array.
  * @param checkElement : The element to search for within the array.
+ * 
  * @return             : The index of the found element if present, otherwise -1.
  */
 int linearSearch(int array[], int size, int checkElement);
