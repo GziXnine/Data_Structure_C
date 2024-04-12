@@ -1,3 +1,6 @@
+#ifndef _LINKEDLIST_DS_H_
+#define _LINKEDLIST_DS_H_
+
 #include "std_types.h" // Include necessary header file for standard data types
 
 typedef struct Node
@@ -107,7 +110,6 @@ linkedList_status_t Delete_Node_At_End(node_ds_t *List);
  *
  * @retval Status indicating success or failure
  */
-
 linkedList_status_t Display_All_Nodes(node_ds_t *List);
 
 /**
@@ -122,3 +124,5 @@ linkedList_status_t Display_All_Nodes(node_ds_t *List);
  * @retval Number of nodes in the linked list
  */
 uint32_t Get_Length(node_ds_t *List, linkedList_status_t *retVal);
+
+#endif // ! _LINKEDLIST_DS_H_
