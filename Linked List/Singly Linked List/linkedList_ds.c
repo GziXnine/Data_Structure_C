@@ -1,48 +1,42 @@
 #include "linkedList_ds.h"
 
-node_ds_t *Insert_Node_At_Beginning(node_ds_t **List, uint32_t *itemPtr, linkedList_status_t *retVal)
-{
-  node_ds_t *tempNode = (node_ds_t *)malloc(sizeof(node_ds_t));
+/**
+ * @brief  Check the status of the linked list
+ *
+ * @param  List : pointer to the linked list structure
+ *
+ * @retval Return status indicating the current state of the linked list
+ */
+static linkedList_status_t linkedList_status(node_ds_t *List)
+{ 
+  return ((!List) ?               LINKED_LIST_NULL_POINTER : 
+          (List->size == ZERO) ?  LINKED_LIST_EMPTY : 
+                                  LINKED_LIST_OK);
+}
 
-  if (!tempNode)
+linkedList_status_t createList(node_ds_t *List)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+
+  if (NULL != List)
   {
-    *retVal = LINKED_LIST_ALLOC_FAIL;
+    retVal = LINKED_LIST_OK;
+
+    List->head = NULL;
+    List->size = ZERO;
   }
   else
   {
-    if (NULL != itemPtr)
-    {
-      tempNode->NodeData = *itemPtr;
-
-      if (NULL != *List)
-      {
-        *retVal = LINKED_LIST_OK;
-
-        tempNode->NodeLink = *List;
-        *List = tempNode;
-      }
-      else
-      {
-        *retVal = LINKED_LIST_NULL_POINTER;
-
-        tempNode->NodeLink = NULL;
-        *List = tempNode;
-      }
-    }
-    else
-    {
-      *retVal = NULL_POINTER;
-    }
+    retVal = LINKED_LIST_NULL_POINTER;
   }
 
-  return tempNode;
+  return retVal;
 }
 
-linkedList_status_t Insert_Node_At_End(node_ds_t **List, uint32_t *itemPtr)
+linkedList_status_t Insert_Node_At_Beginning(node_ds_t *List, uint32_t itemPtr)
 {
   linkedList_status_t retVal = LINKED_LIST_NOK;
-  node_ds_t *tempNode = (node_ds_t *)malloc(sizeof(node_ds_t));
-  node_ds_t *lastNode = NULL;
+  listNode_t *tempNode = (listNode_t *)malloc(sizeof(listNode_t));
 
   if (!tempNode)
   {
@@ -50,27 +44,132 @@ linkedList_status_t Insert_Node_At_End(node_ds_t **List, uint32_t *itemPtr)
   }
   else
   {
-    if (NULL != itemPtr)
-    {
-      tempNode->NodeData = *itemPtr;
-      tempNode->NodeLink = NULL;
+    tempNode->data = itemPtr;
+    tempNode->next = NULL;
 
-      if (NULL != *List)
+    if (NULL != List)
+    {
+      retVal = LINKED_LIST_OK;
+
+      tempNode->next = List->head;
+      List->head = tempNode;
+      (List->size)++;
+    }
+    else
+    {
+      retVal = LINKED_LIST_NULL_POINTER;
+    }
+  }
+
+  return retVal;
+}
+
+linkedList_status_t Insert_Node_At_End(node_ds_t *List, uint32_t itemPtr)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+  listNode_t *tempNode = (listNode_t *)malloc(sizeof(listNode_t));
+  listNode_t *lastNode = (listNode_t *)List;
+
+  if (!tempNode)
+  {
+    retVal = LINKED_LIST_ALLOC_FAIL;
+  }
+  else
+  {
+    if (NULL != List)
+    {
+      retVal = LINKED_LIST_OK;
+
+      tempNode->data = itemPtr;
+      tempNode->next = NULL;
+
+      while (lastNode->next != NULL)
+      {
+        lastNode = lastNode->next;
+      }
+      lastNode->next = tempNode;
+      (List->size)++;
+    }
+    else
+    {
+      retVal = LINKED_LIST_NULL_POINTER;
+    }
+  }
+
+  return retVal;
+}
+
+linkedList_status_t Insert_Node_At_Position(node_ds_t *List, uint32_t itemPtr, uint32_t Postion)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK, l_retVal = ZERO_INIT;
+  listNode_t *tempNode = NULL, *nodeListCounter = NULL;
+  uint32_t listLength = ZERO_INIT, nodeCounter = ZERO_INIT;
+
+  if (NULL != List)
+  {
+    retVal = LINKED_LIST_OK;
+
+    tempNode = (listNode_t *)malloc(sizeof(listNode_t));
+    if (!tempNode)
+    {
+      retVal = LINKED_LIST_ALLOC_FAIL;
+    }
+    else
+    {
+      tempNode->data = itemPtr;
+      tempNode->next = NULL;
+
+      l_retVal = Get_Length(List, &listLength);
+
+      if ((listLength > Postion) && (l_retVal == ZERO))
+      {
+        nodeListCounter = List->head;
+
+        while (nodeCounter < Postion - 1)
+        {
+          nodeCounter++;
+          nodeListCounter = nodeListCounter->next;
+        }
+        tempNode->next = nodeListCounter->next;
+        nodeListCounter->next = tempNode;
+        (List->size)++;
+      }
+      else
+      {
+        retVal = INVALID_POSOTION;
+      }
+    }
+  }
+  else
+  {
+    retVal = LINKED_LIST_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+linkedList_status_t Delete_Node_At_Beginning(node_ds_t *List, uint32_t *itemPtr)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+  node_ds_t *tempNode = List;
+
+  if (NULL != List)
+  {
+    if(NULL != itemPtr)
+    {
+      if (linkedList_status(List) != LINKED_LIST_EMPTY)
       {
         retVal = LINKED_LIST_OK;
-        lastNode = *List;
 
-        while (lastNode->NodeLink != NULL)
-        {
-          lastNode = lastNode->NodeLink;
-        }
-        lastNode->NodeLink = tempNode;
+        *itemPtr = tempNode->head->data;
+        tempNode = (node_ds_t *)List->head->next;
+        free(List->head);
+        List->head = (listNode_t *)tempNode;
+        (List->size)--;
       }
       else
       {
         retVal = LINKED_LIST_EMPTY;
-
-        *List = tempNode;
       }
     }
     else
@@ -78,129 +177,52 @@ linkedList_status_t Insert_Node_At_End(node_ds_t **List, uint32_t *itemPtr)
       retVal = NULL_POINTER;
     }
   }
+  else
+  {
+    retVal = LINKED_LIST_NULL_POINTER;
+  }
 
   return retVal;
 }
 
-linkedList_status_t Insert_Node_At_Position(node_ds_t *List, uint32_t *itemPtr, uint32_t *Postion)
+linkedList_status_t Delete_Node_At_Position(node_ds_t *List, uint32_t Postion, uint32_t *itemPtr)
 {
-  linkedList_status_t retVal = LINKED_LIST_NOK, L_retVal = ZERO_INIT;
-  node_ds_t *tempNode = (node_ds_t *)malloc(sizeof(node_ds_t));
-  node_ds_t *nodeListCounter = NULL;
-  uint32_t listLength = ZERO_INIT, nodeCounter = 1;
-
-  if (!tempNode)
+  linkedList_status_t retVal = LINKED_LIST_NOK, l_retVal = ZERO_INIT;
+  uint32_t listLength = ZERO_INIT, nodeCounter = ZERO_INIT;
+  node_ds_t *nodeListCounter = NULL, *tempNode = NULL;
+  
+  if (NULL != List)
   {
-    retVal = LINKED_LIST_ALLOC_FAIL;
-  }
-  else
-  {
-    if (NULL != itemPtr && NULL != Postion)
+    if (NULL != itemPtr)
     {
-      if (NULL != List)
+      if (linkedList_status(List) != LINKED_LIST_EMPTY)
       {
-        retVal = LINKED_LIST_OK;
-        listLength = Get_Length(List, &L_retVal);
+        l_retVal = Get_Length(List, &listLength);
 
-        if ((listLength >= *Postion) && (L_retVal == ZERO))
+        if ((listLength > Postion) && (l_retVal == ZERO))
         {
-          nodeListCounter = List;
+          retVal = LINKED_LIST_OK;
 
-          while (nodeCounter < *Postion - 1)
+          nodeListCounter = (node_ds_t *)List->head;
+
+          while (nodeCounter < Postion - 1)
           {
             nodeCounter++;
-            nodeListCounter = nodeListCounter->NodeLink;
+            nodeListCounter = (node_ds_t *)nodeListCounter->head;
           }
-          tempNode->NodeData = *itemPtr;
-          tempNode->NodeLink = nodeListCounter->NodeLink;
-          nodeListCounter->NodeLink = tempNode;
+          *itemPtr = nodeListCounter->head->data;
+          tempNode = (node_ds_t *)nodeListCounter->head->next;
+          free(nodeListCounter->head);
+          nodeListCounter->head = (listNode_t *)tempNode;
+          (List->size)--;
         }
-        else
+        else if (listLength <= Postion)
         {
           retVal = INVALID_POSOTION;
         }
       }
       else
       {
-        retVal = LINKED_LIST_NULL_POINTER;
-
-        List = tempNode;
-      }
-    }
-    else
-    {
-      retVal = NULL_POINTER;
-    }
-  }
-
-  return retVal;
-}
-
-linkedList_status_t Delete_Node_At_Beginning(node_ds_t **List)
-{
-  linkedList_status_t L_retVal = LINKED_LIST_NOK, retVal = LINKED_LIST_NOK;
-  uint32_t listLength = ZERO_INIT;
-  node_ds_t *tempNode = *List;
-
-  if (NULL != *List)
-  {
-    listLength = Get_Length(*List, &L_retVal);
-
-    if ((listLength >= 1) && (L_retVal == ZERO))
-    {
-      retVal = LINKED_LIST_OK;
-
-      *List = tempNode->NodeLink;
-      tempNode->NodeLink = NULL;
-      free(tempNode);
-    }
-    else
-    {
-      retVal = LINKED_LIST_EMPTY;
-    }
-  }
-  else
-  {
-    retVal = LINKED_LIST_NULL_POINTER;
-  }
-
-  return retVal;
-}
-
-linkedList_status_t Delete_Node_At_Position(node_ds_t *List, uint32_t *Postion)
-{
-  linkedList_status_t retVal = LINKED_LIST_NOK, L_retVal = ZERO_INIT;
-  uint32_t listLength = ZERO_INIT;
-  node_ds_t *nodeListCounter = NULL;
-  node_ds_t *nextNode = NULL;
-  uint32_t nodeCounter = 1;
-
-  if (NULL != List)
-  {
-    if (NULL != Postion)
-    {
-      listLength = Get_Length(List, &L_retVal);
-
-      if ((listLength >= *Postion) && (L_retVal == ZERO))
-      {
-        retVal = LINKED_LIST_OK;
-        nodeListCounter = nextNode = List;
-
-        while (nodeCounter < *Postion - 1)
-        {
-          nodeCounter++;
-          nodeListCounter = nodeListCounter->NodeLink;
-        }
-        nextNode = nodeListCounter->NodeLink;
-        nodeListCounter->NodeLink = nextNode->NodeLink;
-        free(nextNode);
-      }
-      else if (*Postion > listLength)
-      {
-        retVal = INVALID_POSOTION;
-      }
-      else
-      {
         retVal = LINKED_LIST_EMPTY;
       }
     }
@@ -217,38 +239,45 @@ linkedList_status_t Delete_Node_At_Position(node_ds_t *List, uint32_t *Postion)
   return retVal;
 }
 
-linkedList_status_t Delete_Node_At_End(node_ds_t *List)
+linkedList_status_t Delete_Node_At_End(node_ds_t *List, uint32_t *itemPtr)
 {
-  linkedList_status_t retVal = LINKED_LIST_NOK, L_retVal = ZERO_INIT;
+  linkedList_status_t retVal = LINKED_LIST_NOK, l_retVal = ZERO_INIT;
+  node_ds_t *tempNode = List;
   uint32_t listLength = ZERO_INIT;
-  uint32_t nodeCounter = 1;
+  uint32_t nodeCounter = 0;
 
   if (NULL != List)
   {
-    listLength = Get_Length(List, &L_retVal);
+    retVal = LINKED_LIST_OK;
 
-    if ((listLength > 1) && (L_retVal == ZERO))
+    l_retVal = Get_Length(List, &listLength);
+
+    if ((listLength > 1) && (l_retVal == ZERO))
     {
-      retVal = LINKED_LIST_OK;
-      node_ds_t *tempNode = List;
-
       while (nodeCounter < listLength - 1)
       {
         nodeCounter++;
-        tempNode = tempNode->NodeLink;
+        tempNode = (node_ds_t *)tempNode->head;
       }
-      free(tempNode->NodeLink);
-      tempNode->NodeLink = NULL;
+      *itemPtr = tempNode->head->data;
+      free(tempNode->head);
+      tempNode->head = NULL;
+      (List->size)--;
     }
     else if (listLength == 1)
     {
-      retVal = LINKED_LIST_OK;
-
+      tempNode->head = NULL;
+      tempNode->size = ZERO;
+      
       free(List);
+    }
+    else if (listLength == 0)
+    {
+      retVal = LINKED_LIST_EMPTY;
     }
     else
     {
-      retVal = LINKED_LIST_EMPTY;
+      retVal = LINKED_LIST_NOK;
     }
   }
   else
@@ -261,24 +290,26 @@ linkedList_status_t Delete_Node_At_End(node_ds_t *List)
 
 linkedList_status_t Display_All_Nodes(node_ds_t *List)
 {
-  linkedList_status_t retVal = LINKED_LIST_NOK, L_retVal = ZERO_INIT;
+  linkedList_status_t retVal = LINKED_LIST_NOK, l_retVal = ZERO_INIT;
   uint32_t listLength = ZERO_INIT;
-  node_ds_t *tempNode = List;
+  node_ds_t *tempNode = NULL;
 
   if (NULL != List)
   {
-    listLength = Get_Length(List, &L_retVal);
+    l_retVal = Get_Length(List, &listLength);
 
-    if ((listLength >= 1) && (L_retVal == ZERO))
+    if ((listLength >= 1) && (l_retVal == ZERO))
     {
       retVal = LINKED_LIST_OK;
 
-      while (tempNode != NULL)
+      for (tempNode = List; tempNode->head != NULL; tempNode = (node_ds_t *)tempNode->head)
       {
-        printf("%i -> ", tempNode->NodeData);
-        tempNode = tempNode->NodeLink;
+#ifdef LINKEDLIST_DEBUG
+        printf("%i -> ", tempNode->head->data);
+#endif // LINKEDLIST_DEBUG
       }
-      if (NULL == tempNode)
+
+      if (NULL == tempNode->head)
       {
         printf("NULL \n");
       }
@@ -296,32 +327,121 @@ linkedList_status_t Display_All_Nodes(node_ds_t *List)
   return retVal;
 }
 
-uint32_t Get_Length(node_ds_t *List, linkedList_status_t *retVal)
+linkedList_status_t Get_Length(node_ds_t *List, uint32_t *size)
 {
-  uint32_t length = ZERO_INIT;
-  node_ds_t *tempNode = List;
+  linkedList_status_t retVal = LINKED_LIST_NOK;
 
-  if (NULL != retVal)
+  if (NULL != size)
   {
     if (NULL != List)
     {
-      *retVal = LINKED_LIST_OK;
+      retVal = LINKED_LIST_OK;
 
-      while (tempNode != NULL)
-      {
-        length++;
-        tempNode = tempNode->NodeLink;
-      }
+      *size = List->size;
     }
     else
     {
-      *retVal = LINKED_LIST_NULL_POINTER;
+      retVal = LINKED_LIST_NULL_POINTER;
     }
   }
   else
   {
-    *retVal = NULL_POINTER;
+    retVal = NULL_POINTER;
   }
 
-  return length;
+  return retVal;
+}
+
+linkedList_status_t destroyList(node_ds_t *List)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+  listNode_t *tempNode = NULL;
+
+  if (NULL != List)
+  {
+    while (List->head != NULL)
+    {
+      tempNode = List->head->next;
+      free(List->head);
+      List->head = tempNode;
+    }
+    List->size = ZERO;
+  }
+  else
+  {
+    retVal = LINKED_LIST_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+linkedList_status_t retrieveList(node_ds_t *List, uint32_t Postion, uint32_t *itemPtr)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+  listNode_t *tempNode = (listNode_t *)List;
+  uint32_t nodeCounter = 0;
+
+  if(NULL != List)
+  {
+    if(NULL != itemPtr)
+    {
+      if (linkedList_status(List) != LINKED_LIST_EMPTY)
+      {
+        retVal = LINKED_LIST_OK;
+
+        while(nodeCounter <= Postion)
+        {
+          nodeCounter++;
+          tempNode = tempNode->next;
+        }
+        *itemPtr = tempNode->data;
+      }
+      else
+      {
+        retVal = LINKED_LIST_EMPTY;
+      }
+    }
+    else
+    {
+      retVal = NULL_POINTER;
+    }
+  }
+  else
+  {
+    retVal = LINKED_LIST_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+linkedList_status_t replaceList(node_ds_t *List, uint32_t Postion, uint32_t itemPtr)
+{
+  linkedList_status_t retVal = LINKED_LIST_NOK;
+  listNode_t *tempNode = (listNode_t *)List;
+  uint32_t nodeCounter = 0;
+
+  if(NULL != List)
+  {
+    if (linkedList_status(List) != LINKED_LIST_EMPTY)
+      {
+        retVal = LINKED_LIST_OK;
+
+        while(nodeCounter <= Postion)
+        {
+          nodeCounter++;
+          tempNode = tempNode->next;
+        }
+        tempNode->data = itemPtr;
+      }
+      else
+      {
+        retVal = LINKED_LIST_EMPTY;
+      }
+  }
+  else
+  {
+    retVal = LINKED_LIST_NULL_POINTER;
+  }
+
+  return retVal;
 }
