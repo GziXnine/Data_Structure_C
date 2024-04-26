@@ -1,37 +1,26 @@
 #include "graph_ds.h"
 
-/**
- * Checks the status of the graph.
- *
- * @param graph : Pointer to the graph structure.
- * 
- * @return return_status_t indicating the current state of the graph.
- */
-static return_status_t graph_status(graph_ds_t *graph)
-{
-  return ((!graph) ?                              GRAPH_NULL_POINTER : 
-          (graph->numVertices  == MAX_VERTICES) ? GRAPH_FULL : 
-          (graph->numVertices  == ZERO) ?         GRAPH_EMPTY  : 
-                                                  GRAPH_HAS_SPACE);  
-}
-
-return_status_t initGraph(graph_ds_t *graph, uint32_t numVertices, uint32_t defaultData)
+return_status_t initGraph(Graph *graph, uint32_t numVertices, uint32_t defaultData)
 {
   return_status_t retVal = GRAPH_NOK;
-  uint16_t index_1 = ZERO_INIT, index_2 = ZERO_INIT;
+  uint16_t index_1 = ZERO_INIT;
 
-  if (NULL != graph)
+  if (graph != NULL)
   {
-    retVal = GRAPH_OK;
-    graph->numVertices = numVertices;
-
-    for (index_1 = 0; index_1 < numVertices; ++index_1)
+    if (numVertices > MAX_VERTICES)
     {
-      graph->vertices[index_1].data = defaultData;
+      retVal = GRAPH_FULL;
+    }
+    else
+    {
+      retVal = GRAPH_OK;
 
-      for (index_2 = 0; index_2 < numVertices; ++index_2)
+      graph->numVertices = numVertices;
+
+      for (index_1 = 0; index_1 < numVertices; ++index_1)
       {
-        graph->adjMatrix[index_1][index_2] = ZERO;
+        graph->vertices[index_1].data = defaultData;
+        graph->vertices[index_1].edges = NULL;
       }
     }
   }
@@ -43,16 +32,188 @@ return_status_t initGraph(graph_ds_t *graph, uint32_t numVertices, uint32_t defa
   return retVal;
 }
 
-return_status_t setVertexData(graph_ds_t *graph, sint16_t vertex, uint32_t data)
+return_status_t clearGraph(Graph *graph)
 {
   return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL, *temp = NULL;
+  uint16_t index_1 = ZERO_INIT;
 
-  if (NULL != graph)
+  if (graph != NULL)
   {
     retVal = GRAPH_OK;
 
-    if (vertex >= 0 && vertex < (sint16_t)graph->numVertices)
+    for (index_1 = 0; index_1 < graph->numVertices; ++index_1)
     {
+      current = graph->vertices[index_1].edges;
+      while (current)
+      {
+        temp = current;
+        current = current->next;
+
+        free(temp);
+      }
+      graph->vertices[index_1].edges = NULL;
+      graph->vertices[index_1].data = ZERO;
+    }
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t getNumVertices(Graph *graph, uint32_t *numVer)
+{
+  return_status_t retVal = GRAPH_NOK;
+
+  if (graph != NULL)
+  {
+    retVal = GRAPH_OK;
+
+    *numVer = graph->numVertices;
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t getNumEdges(Graph *graph, uint32_t *numEdges)
+{
+  return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL;
+  uint16_t index_1 = ZERO_INIT;
+  *numEdges = ZERO;
+
+  if (graph != NULL)
+  {
+    retVal = GRAPH_OK;
+
+    for (index_1 = 0; index_1 < graph->numVertices; ++index_1)
+    {
+      current = graph->vertices[index_1].edges;
+
+      while (current)
+      {
+        ++(*numEdges);
+        current = current->next;
+      }
+    }
+
+    (*numEdges) /= 2;
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t getAdjacentVertices(Graph *graph, uint32_t vertex, uint32_t *adjacentVertices, uint32_t *numAdjacent)
+{
+  return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL;
+  uint32_t count = ZERO;
+
+  if (graph != NULL)
+  {
+    if (adjacentVertices != NULL && numAdjacent != NULL)
+    {
+      if (vertex < graph->numVertices)
+      {
+        retVal = GRAPH_OK;
+
+        current = graph->vertices[vertex].edges;
+
+        while (current)
+        {
+          adjacentVertices[count++] = (uint32_t)current->dest;
+          current = current->next;
+        }
+
+        *numAdjacent = count;
+      }
+      else
+      {
+        retVal = INVALID_POSITION;
+      }
+    }
+    else
+    {
+      retVal = NULL_POINTER;
+    }
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;  
+}
+
+return_status_t destroyGraph(Graph *graph)
+{
+  return_status_t retVal = GRAPH_NOK;
+
+  if (graph != NULL)
+  {
+    retVal = GRAPH_OK;
+
+    clearGraph(graph);
+    graph->numVertices = ZERO;
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t getVertexData(Graph *graph, uint32_t vertex, uint32_t *data)
+{
+  return_status_t retVal = GRAPH_NOK;
+
+  if (graph != NULL)
+  {
+    if (vertex < graph->numVertices)
+    {
+      retVal = GRAPH_OK;
+
+      *data = graph->vertices[vertex].data;
+    }
+    else
+    {
+      retVal = INVALID_POSITION;
+    }
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t setVertexData(Graph *graph, sint32_t vertex, uint32_t data)
+{
+  return_status_t retVal = GRAPH_NOK;
+
+  if (graph != NULL)
+  {
+    if (vertex < 0 || vertex >= (sint32_t)graph->numVertices)
+    {
+      retVal = INVALID_POSITION;
+    }
+    else
+    {
+      retVal = GRAPH_OK;
+
       graph->vertices[vertex].data = data;
     }
   }
@@ -64,66 +225,115 @@ return_status_t setVertexData(graph_ds_t *graph, sint16_t vertex, uint32_t data)
   return retVal;
 }
 
-return_status_t removeVertex(graph_ds_t *graph, uint16_t vertex)
+return_status_t addEdge(Graph *graph, sint32_t source, sint32_t dest)
 {
   return_status_t retVal = GRAPH_NOK;
-  uint16_t index_1 = ZERO_INIT, index_2 = ZERO_INIT;
+  EdgeNode *newEdge = NULL;
 
-  if (NULL != graph)
+  if (graph != NULL)
   {
-    if (vertex >= graph->numVertices)
+    if (source < 0 || source >= (sint32_t)graph->numVertices || dest < 0 || dest >= (sint32_t)graph->numVertices)
     {
-      retVal = GRAPH_NOK;
-
-      // Shift rows up
-      for (index_1 = vertex; index_1 < graph->numVertices - 1; ++index_1)
+      retVal = INVALID_POSITION;
+    }
+    else
+    {
+      newEdge = (EdgeNode *)malloc(sizeof(EdgeNode));
+      if (!newEdge)
       {
-        for (index_2 = 0; index_2 < graph->numVertices; ++index_2)
+        retVal = GRAPH_ALLOC_FAIL;
+      }
+      else
+      {
+        newEdge->dest = dest;
+        newEdge->next = graph->vertices[source].edges;
+        graph->vertices[source].edges = newEdge;
+
+        newEdge = (EdgeNode *)malloc(sizeof(EdgeNode));
+        if (!newEdge)
         {
-          graph->adjMatrix[index_1][index_2] = graph->adjMatrix[index_1 + 1][index_2];
+          retVal = GRAPH_ALLOC_FAIL;
+        }
+        else
+        {
+          retVal = GRAPH_OK;
+
+          newEdge->dest = source;
+          newEdge->next = graph->vertices[dest].edges;
+          graph->vertices[dest].edges = newEdge;
         }
       }
+    }
+  }
+  else
+  {
+    retVal = GRAPH_NULL_POINTER;
+  }
 
-      // Shift columns left
-      for (index_1 = vertex; index_1 < graph->numVertices - 1; ++index_1)
+  return retVal;
+}
+
+return_status_t removeEdge(Graph *graph, sint32_t source, sint32_t dest)
+{
+  return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL, *prev = NULL;
+
+  if (graph != NULL)
+  {
+    if (source < 0 || source >= (sint32_t)graph->numVertices || dest < 0 || dest >= (sint32_t)graph->numVertices)
+    {
+      retVal = INVALID_POSITION;
+    }
+    else
+    {
+      current = graph->vertices[source].edges;
+
+      while (current)
       {
-        for (index_2 = 0; index_2 < graph->numVertices; ++index_2)
+        if (current->dest == dest)
         {
-          graph->adjMatrix[index_1][index_2] = graph->adjMatrix[index_1][index_2 + 1];
+          retVal = GRAPH_OK;
+
+          if (prev)
+          {
+            prev->next = current->next;
+          }
+          else
+          {
+            graph->vertices[source].edges = current->next;
+          }
+          free(current);
+
+          break;
         }
+        prev = current;
+        current = current->next;
       }
 
-      (graph->numVertices)--;
-    }
-    else
-    {
-      retVal = INVALID_POSITION;
-    }
-  }
-  else
-  {
-    retVal = GRAPH_NULL_POINTER;
-  }
+      current = graph->vertices[dest].edges;
+      prev = NULL;
 
-  return retVal;
-}
+      while (current)
+      {
+        if (current->dest == source)
+        {
+          retVal = GRAPH_OK;
 
-return_status_t addEdge(graph_ds_t *graph, uint16_t source, uint16_t dest)
-{
-  return_status_t retVal = GRAPH_NOK;
+          if (prev)
+          {
+            prev->next = current->next;
+          }
+          else
+          {
+            graph->vertices[dest].edges = current->next;
+          }
 
-  if (NULL != graph)
-  {
-    if (source < graph->numVertices && dest < graph->numVertices)
-    {
-      retVal = GRAPH_OK;
-
-      graph->adjMatrix[source][dest] = ONE;
-      graph->adjMatrix[dest][source] = ONE;
-    }
-    else
-    {
-      retVal = INVALID_POSITION;
+          free(current);
+          break;
+        }
+        prev = current;
+        current = current->next;
+      }
     }
   }
   else
@@ -134,234 +344,65 @@ return_status_t addEdge(graph_ds_t *graph, uint16_t source, uint16_t dest)
   return retVal;
 }
 
-return_status_t removeEdge(graph_ds_t *graph, uint16_t source, uint16_t dest)
+bool_t isAdjacent(Graph *graph, sint32_t source, sint32_t dest, return_status_t *retVal)
 {
-  return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL;
+  *retVal = GRAPH_NOK;
 
-  if (NULL != graph)
+  if (!graph)
   {
-    if (source < graph->numVertices && dest < graph->numVertices)
-    {
-      retVal = GRAPH_OK;
-
-      graph->adjMatrix[source][dest] = ZERO;
-      graph->adjMatrix[dest][source] = ZERO;
-    }
-    else
-    {
-      retVal = INVALID_POSITION;
-    }
+    *retVal = GRAPH_NULL_POINTER;
   }
   else
   {
-    retVal = GRAPH_NULL_POINTER;
-  }
-
-  return retVal;
-}
-
-bool_t isAdjacent(graph_ds_t *graph, uint16_t source, uint16_t dest, return_status_t *retVal)
-{
-  bool_t check = ZERO;
-
-  if (NULL != graph)
-  {
-    if (source < graph->numVertices && dest < graph->numVertices)
-    {
-      *retVal = GRAPH_OK;
-      
-      check = (graph->adjMatrix[source][dest]);
-    }
-    else
+    if (source < 0 || source >= (sint32_t)graph->numVertices || dest < 0 || dest >= (sint32_t)graph->numVertices)
     {
       *retVal = INVALID_POSITION;
     }
-  }
-  else
-  {
-    *retVal = GRAPH_NULL_POINTER;
-  }
-      
-  return check;
-}
-
-return_status_t getNumVertices(graph_ds_t *graph, uint32_t *numVerts)
-{
-  return_status_t retVal = GRAPH_NOK;
-
-  if (NULL != graph)
-  {
-
-    if (graph_status(graph) != GRAPH_EMPTY)
-    {
-      retVal = GRAPH_OK;
-
-      *numVerts = graph->numVertices;
-    }
     else
     {
-      retVal = GRAPH_EMPTY;
-    }
-  }
-  else
-  {
-    retVal = GRAPH_NULL_POINTER;
-  }
+      current = graph->vertices[source].edges;
 
-  return retVal;
-}
-
-return_status_t getNumEdges(graph_ds_t *graph, uint32_t *numEdges)
-{
-  return_status_t retVal = GRAPH_NOK;
-  uint16_t index_1 = ZERO_INIT, index_2 = ZERO_INIT;
-
-  if (NULL != graph)
-  {
-    if (graph_status(graph) != GRAPH_EMPTY)
-    {
-      retVal = GRAPH_OK;
-      *numEdges = ZERO;
-
-      for (index_1 = 0; index_1 < graph->numVertices; ++index_1)
+      while (current)
       {
-        for (index_2 = 0; index_2 < graph->numVertices; ++index_2)
+        if (current->dest == dest)
         {
-          if (graph->adjMatrix[index_1][index_2])
-          {
-            (*numEdges)++;
-          }
+          *retVal = GRAPH_OK;
         }
+        current = current->next;
       }
     }
-    else
-    {
-      retVal = GRAPH_EMPTY;
-    }
-  }
-  else
-  {
-    retVal = GRAPH_NULL_POINTER;
   }
 
-  return retVal;
+  return 0;
 }
 
-uint32_t *getAdjacentVertices(graph_ds_t *graph, uint16_t vertex, uint32_t *numAdjacent, uint32_t **adjacentData, return_status_t *retVal)
+return_status_t printGraph(Graph *graph)
 {
-  uint32_t *adjacentVertices = NULL;
+  return_status_t retVal = GRAPH_NOK;
+  EdgeNode *current = NULL;
   uint16_t index_1 = ZERO_INIT;
 
-  if (NULL != graph)
+  if (graph == NULL)
   {
-    if (NULL != numAdjacent)
-    {
-      adjacentVertices = (uint32_t *)calloc(graph->numVertices, sizeof(uint32_t));
-
-      if (!adjacentVertices)
-      {
-        *retVal = GRAPH_ALLOC_FAIL;
-      }
-      else
-      {
-        *retVal = GRAPH_OK;
-
-        *numAdjacent = ZERO_INIT;
-
-        for (index_1 = 0; index_1 < graph->numVertices; index_1++)
-        {
-          if (graph->adjMatrix[vertex][index_1])
-          {
-            adjacentVertices[(*numAdjacent)++] = index_1;
-          }
-        }
-      }
-      *adjacentData = (uint32_t *)calloc(*numAdjacent, sizeof(uint32_t));
-
-      if (!(*adjacentData))
-      {
-        *retVal = GRAPH_ALLOC_FAIL;
-      }
-      else
-      {
-        *retVal = GRAPH_OK;
-
-        // Copy data associated with adjacent vertices
-        for (index_1 = 0; index_1 < *numAdjacent; index_1++)
-        {
-          (*adjacentData)[index_1] = graph->vertices[adjacentVertices[index_1]].data;
-        }
-      }
-    }
-    else
-    {
-      *retVal = NULL_POINTER;
-    }
+    retVal = GRAPH_NULL_POINTER;
   }
   else
-  {
-    *retVal = GRAPH_NULL_POINTER;
-  }
-
-  return adjacentVertices;
-}
-
-return_status_t printGraph(graph_ds_t *graph)
-{
-  return_status_t retVal = GRAPH_NOK;
-  uint16_t index_1 = ZERO_INIT, index_2 = ZERO_INIT;
-
-  if (NULL != graph)
   {
     retVal = GRAPH_OK;
 
     for (index_1 = 0; index_1 < graph->numVertices; ++index_1)
     {
-      for (index_2 = 0; index_2 < graph->numVertices; ++index_2)
+      printf("Vertex %d (%d): ", index_1, graph->vertices[index_1].data);
+      current = graph->vertices[index_1].edges;
+
+      while (current)
       {
-#ifdef GRAPH_DEBUG
-        printf("(%u, %u) ", graph->adjMatrix[index_1][index_2], graph->vertices[index_1].data);
-#endif // GRAPH_DEBUG
+        printf("%d ", current->dest);
+        current = current->next;
       }
       printf("\n");
     }
-  }
-  else
-  {
-    retVal = GRAPH_NULL_POINTER;
-  }
-
-  return retVal;
-}
-
-return_status_t getDegree(graph_ds_t *graph, uint16_t vertex, uint32_t *degree)
-{
-  return_status_t retVal = GRAPH_NOK;
-  uint16_t index_1 = ZERO_INIT;
-  *degree = ZERO_INIT;
-
-  if (NULL != graph)
-  {
-    if (vertex < graph->numVertices)
-    {
-      retVal = GRAPH_OK;
-
-      for (index_1 = 0; index_1 < graph->numVertices; ++index_1)
-      {
-        if (graph->adjMatrix[vertex][index_1])
-        {
-          (*degree)++;
-        }
-      }
-    }
-    else
-    {
-      retVal = INVALID_POSITION;
-    }
-  }
-  else
-  {
-    retVal = GRAPH_NULL_POINTER;
   }
 
   return retVal;
