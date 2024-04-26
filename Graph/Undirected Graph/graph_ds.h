@@ -6,19 +6,26 @@
 #define MAX_VERTICES 100 // Define maximum size for the graph
 #define GRAPH_DEBUG
 
-typedef struct GraphVertex 
+typedef struct EdgeNode 
 {
-  uint32_t data; // Data associated with the vertex
+  sint32_t dest;
+  struct EdgeNode* next;
 
-} GraphVertex;
+} EdgeNode;
+
+typedef struct Vertex 
+{
+  uint32_t data;
+  EdgeNode* edges;
+
+} Vertex;
 
 typedef struct Graph 
 {
-  uint32_t adjMatrix[MAX_VERTICES][MAX_VERTICES]; // Adjacency matrix to represent edges between vertices
-  uint32_t numVertices; // Number of vertices in the graph
-  GraphVertex vertices[MAX_VERTICES]; // Array to store data associated with each vertex
+  uint32_t numVertices;
+  Vertex vertices[MAX_VERTICES];
 
-} graph_ds_t;
+} Graph;
 
 typedef enum
 {
@@ -43,17 +50,79 @@ typedef enum
  * 
  * @return return_status_t indicating success or failure of the operation.
  */
-return_status_t initGraph(graph_ds_t *graph, uint32_t numVertices, uint32_t defaultData);
+return_status_t initGraph(Graph *graph, uint32_t numVertices, uint32_t defaultData);
 
 /**
- * Removes a vertex from the graph and updates the adjacency matrix accordingly.
+ * Clears all vertices and edges in the graph.
  *
- * @param graph  : Pointer to the graph structure.
- * @param vertex : Vertex to be removed.
+ * @param graph : Pointer to the graph structure to be cleared.
  * 
  * @return return_status_t indicating success or failure of the operation.
  */
-return_status_t removeVertex(graph_ds_t *graph, uint16_t vertex);
+return_status_t clearGraph(Graph *graph);
+
+/**
+ * Retrieves the number of vertices in the graph.
+ *
+ * @param graph   : Pointer to the graph structure.
+ * @param numVer  : Pointer to store the number of vertices.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t getNumVertices(Graph *graph, uint32_t *numVer);
+
+/**
+ * Retrieves the number of edges in the graph.
+ *
+ * @param graph    : Pointer to the graph structure.
+ * @param numEdges : Pointer to store the number of edges.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t getNumEdges(Graph *graph, uint32_t *numEdges);
+
+/**
+ * Retrieves the adjacent vertices of a given vertex in the graph.
+ *
+ * @param graph          : Pointer to the graph structure.
+ * @param vertex         : Vertex for which adjacent vertices are to be retrieved.
+ * @param adjacentVertices: Pointer to store the adjacent vertices.
+ * @param numAdjacent    : Pointer to store the number of adjacent vertices.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t getAdjacentVertices(Graph *graph, uint32_t vertex, uint32_t *adjacentVertices, uint32_t *numAdjacent);
+
+/**
+ * Destroys the graph by freeing all memory allocated to vertices and edges.
+ *
+ * @param graph : Pointer to the graph structure to be destroyed.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t destroyGraph(Graph *graph);
+
+/**
+ * Retrieves the data associated with a vertex in the graph.
+ *
+ * @param graph  : Pointer to the graph structure.
+ * @param vertex : Vertex for which data is to be retrieved.
+ * @param data   : Pointer to store the data associated with the vertex.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t getVertexData(Graph *graph, uint32_t vertex, uint32_t *data);
+
+/**
+ * Sets the data associated with a vertex in the graph.
+ *
+ * @param graph  : Pointer to the graph structure.
+ * @param vertex : Vertex for which data is to be set.
+ * @param data   : Data to be associated with the vertex.
+ * 
+ * @return return_status_t indicating success or failure of the operation.
+ */
+return_status_t setVertexData(Graph *graph, sint32_t vertex, uint32_t data);
 
 /**
  * Adds an edge between two vertices in the graph.
@@ -64,7 +133,7 @@ return_status_t removeVertex(graph_ds_t *graph, uint16_t vertex);
  * 
  * @return return_status_t indicating success or failure of the operation.
  */
-return_status_t addEdge(graph_ds_t *graph, uint16_t src, uint16_t dest);
+return_status_t addEdge(Graph *graph, sint32_t source, sint32_t dest);
 
 /**
  * Removes an edge between two vertices in the graph.
@@ -75,7 +144,7 @@ return_status_t addEdge(graph_ds_t *graph, uint16_t src, uint16_t dest);
  * 
  * @return return_status_t indicating success or failure of the operation.
  */
-return_status_t removeEdge(graph_ds_t *graph, uint16_t src, uint16_t dest);
+return_status_t removeEdge(Graph *graph, sint32_t source, sint32_t dest);
 
 /**
  * Checks if there is an edge between two vertices in the graph.
@@ -87,70 +156,15 @@ return_status_t removeEdge(graph_ds_t *graph, uint16_t src, uint16_t dest);
  * 
  * @return bool_t indicating whether there is an edge between the source and destination vertices.
  */
-bool_t isAdjacent(graph_ds_t *graph, uint16_t source, uint16_t dest, return_status_t *retVal);
+bool_t isAdjacent(Graph *graph, sint32_t source, sint32_t dest, return_status_t *retVal);
 
 /**
- * Retrieves the number of vertices in the graph.
- *
- * @param graph   : Pointer to the graph structure.
- * @param numVerts: Pointer to store the number of vertices.
- * 
- * @return return_status_t indicating success or failure of the operation.
- */
-return_status_t getNumVertices(graph_ds_t *graph, uint32_t *numVerts);
-
-/**
- * Retrieves the number of edges in the graph.
- *
- * @param graph    : Pointer to the graph structure.
- * @param numEdges : Pointer to store the number of edges.
- * 
- * @return return_status_t indicating success or failure of the operation.
- */
-return_status_t getNumEdges(graph_ds_t *graph, uint32_t *numEdges);
-
-/**
- * Retrieves the degree of a given vertex in the graph.
- *
- * @param graph  : Pointer to the graph structure.
- * @param vertex : Vertex for which degree is to be retrieved.
- * @param degree : Pointer to store the degree of the vertex.
- * 
- * @return return_status_t indicating success or failure of the operation.
- */
-return_status_t getDegree(graph_ds_t *graph, uint16_t vertex, uint32_t *degree);
-
-/**
- * Retrieves the adjacent vertices of a given vertex in the graph along with their associated data.
- *
- * @param graph          : Pointer to the graph structure.
- * @param vertex         : Vertex for which adjacent vertices are to be retrieved.
- * @param numAdjacent    : Pointer to store the number of adjacent vertices.
- * @param adjacentData   : Pointer to store the associated data of adjacent vertices.
- * @param retVal         : Pointer to store the return status of the operation.
- * 
- * @return uint32_t array containing adjacent vertices.
- */
-uint32_t *getAdjacentVertices(graph_ds_t *graph, uint16_t vertex, uint32_t *numAdjacent, uint32_t **adjacentData, return_status_t *retVal);
-
-/**
- * Prints the adjacency matrix representation of the graph.
+ * Prints the adjacency list representation of the graph.
  *
  * @param graph : Pointer to the graph structure.
  * 
  * @return return_status_t indicating success or failure of the operation.
  */
-return_status_t printGraph(graph_ds_t *graph);
-
-/**
- * Sets the data associated with a vertex in the graph.
- *
- * @param graph  : Pointer to the graph structure.
- * @param vertex : Vertex for which data is to be set.
- * @param data   : Data to be associated with the vertex.
- * 
- * @return return_status_t indicating success or failure of the operation.
- */
-return_status_t setVertexData(graph_ds_t *graph, sint16_t vertex, uint32_t data);
+return_status_t printGraph(Graph *graph);
 
 #endif // !_GRAPH_DS_H_
