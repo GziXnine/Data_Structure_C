@@ -5,22 +5,21 @@ return_status_t arrayInit(array_node_t **Array, uint16_t rowNum)
   return_status_t retVal = ARRAY_NOK;
   array_node_t *tempNode = NULL;
 
-    tempNode = (array_node_t *)malloc(sizeof(array_node_t));
+  tempNode = (array_node_t *)malloc(sizeof(array_node_t));
 
-    if (!tempNode)
-    {
-      retVal = ARRAY_ALLOC_FAIL;
-    }
-    else
-    {
-      retVal = ARRAY_OK;
+  if (!tempNode)
+  {
+    retVal = ARRAY_ALLOC_FAIL;
+  }
+  else
+  {
+    retVal = ARRAY_OK;
 
-      tempNode->rowNum = rowNum;
-      tempNode->rows = (uint32_t **)calloc(rowNum, sizeof(uint32_t *));
-      tempNode->sizes = (uint32_t *)calloc(rowNum, sizeof(uint32_t));
-      *Array = tempNode;
-    }
-
+    tempNode->rowNum = rowNum;
+    tempNode->rows = (uint32_t **)calloc(rowNum, sizeof(uint32_t *));
+    tempNode->sizes = (uint32_t *)calloc(rowNum, sizeof(uint32_t));
+    *Array = tempNode;
+  }
 
   return retVal;
 }
@@ -40,7 +39,7 @@ return_status_t setRowSize(array_node_t *Array, uint16_t rowIndex, uint16_t rowS
   {
     retVal = ARRAY_NULL_POINTER;
   }
-  
+
   return retVal;
 }
 
@@ -50,15 +49,22 @@ return_status_t setValue(array_node_t *Array, uint16_t row, uint16_t col, uint32
 
   if (NULL != Array)
   {
-    retVal = ARRAY_OK;
+    if (row < (Array->rowNum) && col < (Array->sizes[row]))
+    {
+      retVal = ARRAY_OK;
 
-    Array->rows[row][col] = Value;
+      Array->rows[row][col] = Value;
+    }
+    else
+    {
+      retVal = INVALID_POSITION;
+    }
   }
   else
   {
     retVal = ARRAY_NULL_POINTER;
   }
-  
+
   return retVal;
 }
 
@@ -70,9 +76,16 @@ return_status_t getValue(array_node_t *Array, uint16_t row, uint16_t col, uint32
   {
     if (NULL != Value)
     {
-      retVal = ARRAY_OK;
+      if (row < (Array->rowNum) && col < (Array->sizes[row]))
+      {
+        retVal = ARRAY_OK;
 
-      *Value = Array->rows[row][col];
+        *Value = Array->rows[row][col];
+      }
+      else
+      {
+        retVal = INVALID_POSITION;
+      }
     }
     else
     {
@@ -83,7 +96,7 @@ return_status_t getValue(array_node_t *Array, uint16_t row, uint16_t col, uint32
   {
     retVal = ARRAY_NULL_POINTER;
   }
-  
+
   return retVal;
 }
 
@@ -109,7 +122,7 @@ return_status_t freeJaggedArray(array_node_t *Array)
   {
     retVal = ARRAY_NULL_POINTER;
   }
-  
+
   return retVal;
 }
 
@@ -137,6 +150,6 @@ return_status_t printJaggedArray(array_node_t *Array)
   {
     retVal = ARRAY_NULL_POINTER;
   }
-  
+
   return retVal;
 }
