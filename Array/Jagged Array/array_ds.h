@@ -15,6 +15,7 @@ typedef enum
 {
   ARRAY_OK,               /* Array operation performed successfully */
   ARRAY_NOK,              /* Array operation not performed successfully */
+  INVALID_POSITION,       /* Invalid position provided for the array operation */
   ARRAY_NULL_POINTER,     /* NULL pointer passed to the array operations */
   ARRAY_ALLOC_FAIL,       /* Memory allocation for array failed */
   NULL_POINTER            /* Additional NULL pointer status */
