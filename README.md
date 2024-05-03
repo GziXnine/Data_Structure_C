@@ -5,23 +5,40 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 ## Data Structures
 
 ### Arrays
-- **Dynamic 1D Array (vector)**:
-- **Dynamic 2D Array**:
-- **Jagged Array**:
+- **Dynamic 1D Array (vector)**
+- **Dynamic 2D Array**
+- **Jagged Array**
 
 ### Graph
-- **Adjacency Matrix**:
-- **Undirected Graph**:
+- **Adjacency Matrix**
+- **Undirected Graph**
 
 ### Linked List
-- **Array-based Linked List**:
-- **Doubly Linked List**:
-- **Singly Linked List**:
+- **Array-based Linked List**
+- **Doubly Linked List**
+- **Singly Linked List**
 
 ### Queue
-- **Array-based Queue**:
-- **Circular Queues**:
-- **Linked List-based Queue**:
+- **Array-based Queue**
+- **Circular Queues**
+- **Linked List-based Queue**
+  
+ ### Search Algorithms
+ 
+   - **Binary Search**:
+     - ***Exponential Search***
+     - ***Interpolation Search***
+     - ***Lower Bound Search***
+     - ***Upper Bound Search***
+     - ***Recursive Search***
+     - ***Rotated Search***
+     - ***Traditional Search***
+       
+   - **Linear Search**:
+     - ***Basic Linear Search***
+     - ***Optimized Search***
+     - ***Recursive Search***
+     - ***Sequential Search***
  
 ### Sorting Algorithms
 - **Bubble Sort**:
@@ -33,20 +50,6 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 - **Radix Sort**:
 - **Selection Sort**:
   
- ### Search Algorithms
-  #### Binary Search
-     - ***Exponential Search**:
-     - **Interpolation Search**:
-     - **Lower Bound Search**:
-     - **Upper Bound Search**:
-     - **Recursive Search**:
-     - **Rotated Search**:
-     - **Traditional Search**:
-   #### Linear Search
-     - **Basic Linear Search**:
-     - **Optimized Search**:
-     - **Recursive Search**:
-     - **Sequential Search**:
 
 ### Stack
 - **Array-based Stack**:
