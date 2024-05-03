@@ -19,8 +19,8 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 
 ### Heap
 - **Binary Heap**
-- ***Max Heap***
-- ***Min Heap***
+  - ***Max Heap***
+  - ***Min Heap***
 - **Binomial Heap**
 
 ### Linked List
