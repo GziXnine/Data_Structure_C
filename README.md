@@ -2,7 +2,7 @@
 
 Welcome to the Data Structures and Algorithms repository! This repository serves as a comprehensive guide to various data structures and algorithms commonly used in computer science and programming.
 
-![Data Structures and Algorithms](https://github.com/AllamF5J/Data_Structure_C/blob/main/Chess.jpg))
+![Data Structures and Algorithms](https://github.com/AllamF5J/Data_Structure_C/blob/main/Chess.jpg)
 
 <div align="center">
   ![Completion](https://img.shields.io/badge/Completion-70%25-blue) ![GitHub watchers](https://img.shields.io/github/watchers/AllamF5J/Data_Structure_C?label=Watchers&labelColor=blue&style=flat)
