@@ -4,10 +4,10 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 
 ![Data Structures and Algorithms](https://github.com/AllamF5J/Data_Structure_C/blob/main/Chess.jpg)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Completion-77%25-blue" alt="Completion">&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/badge/dynamic/json?label=Visits&query=%24.value&url=https://api.countapi.xyz/hit/github.com/AllamF5J/Data_Structure_C" alt="Visits">
-</p>
+  <p align="center">
+    <img src="https://img.shields.io/badge/Completion-77%25-blue" alt="Completion">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="https://visitor-badge.laobi.icu/badge?page_id=AllamF5J/Data_Structure_C" alt="Visitors"/>
+  </p>
 
 ## Data Structures
 
