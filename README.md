@@ -6,7 +6,7 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 
 <p align="center">
   <img src="https://img.shields.io/badge/Completion-70%25-blue" alt="Completion">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://img.shields.io/github/watchers/AllamF5J/Data_Structure_C?label=Watchers&labelColor=gray&color=blue&style=flat&message=1281" alt="GitHub watchers">
+  <img src="https://img.shields.io/github/watchers/AllamF5J/Data_Structure_C?label=Watchers&labelColor=blue&style=flat&message=1281" alt="GitHub watchers">
 </p>
 
 ## Data Structures
