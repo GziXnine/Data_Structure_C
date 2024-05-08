@@ -5,7 +5,7 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 ![Data Structures and Algorithms](https://github.com/AllamF5J/Data_Structure_C/blob/main/Chess.jpg)
 
   <p align="center">
-    <img src="https://img.shields.io/badge/Completion-77%25-blue" alt="Completion">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <img src="https://img.shields.io/badge/Completion-83%25-blue" alt="Completion">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <img src="https://visitor-badge.laobi.icu/badge?page_id=AllamF5J/Data_Structure_C" alt="Visitors"/>
   </p>
 
@@ -13,7 +13,6 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 
 ### Arrays
 - [**Dynamic 1D Array (Vector)**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Array/Dynamic%201D_Array%20(vector))
-- **Dynamic 2D Array (Matrix)**
 - [**Jagged Array**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Array/Jagged%20Array)
 
 ### Graph
@@ -41,11 +40,15 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 - **Hash Map**
 - **Linked Hash Map**
 
+### Matrix
+  - [**Dynamic 2D Array**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Matrix)
+
+
 ### Queue
 - [**Array-based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Array-based%20Queue)
 - [**Circular Queues**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Circular%20Queue)
 - [**Linked List-based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Linked%20List%20Based%20Queue)
-- **Two Stacks Based Queue**
+- [**Two Stacks Based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Two%20Stacks%20Based%20Queue)
   
 ### Set
 - **Hash Set**
@@ -65,7 +68,7 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
   
 ## Algorithms
 
- [### Search Algorithms](https://github.com/AllamF5J/Data_Structure_C/tree/main/Searching%20Algorithm)
+ ### Search Algorithms
  
    - **Binary Search**:
      - [***Exponential Search***](https://github.com/AllamF5J/Data_Structure_C/blob/main/Searching%20Algorithm/Binary%20search/ExponentialSearch.c)
@@ -86,7 +89,7 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
      - [***Recursive Search***](https://github.com/AllamF5J/Data_Structure_C/blob/main/Searching%20Algorithm/Linear%20search/RecursiveSearch.c)
      - [***Sequential Search***](https://github.com/AllamF5J/Data_Structure_C/blob/main/Searching%20Algorithm/Linear%20search/SequentialSearch.c)
     
-[### Sorting Algorithms](https://github.com/AllamF5J/Data_Structure_C/tree/main/Sorting%20Algorithm)
+### Sorting Algorithms
 
   - [**Bubble Sort**](https://github.com/AllamF5J/Data_Structure_C/blob/main/Sorting%20Algorithm/BubbleSort.c)
   - [**Count Sort**](https://github.com/AllamF5J/Data_Structure_C/blob/main/Sorting%20Algorithm/CountSort.c)
