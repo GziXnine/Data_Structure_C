@@ -1,145 +1,188 @@
 #include "set_ds.h"
 
-/**
- * @brief  Check the status of the set
- *
- * @param  set : pointer to the set structure
- *
- * @retval Return status indicating the current state of the set
- */
-static return_status_t setStatus(Node *set)
+return_status_t contains(Node *set, uint32_t element)
 {
-  return ((!set) ? SET_NULL_POINTER : (set->length == 0) ? SET_EMPTY
-                                                         : SET_HAS_SPACE);
-}
+  return_status_t retVal = SET_NOT_FOUND;
+  Node *current = set;
 
-Node* initialize()
-{
-    return NULL;
-}
-
-return_status_t contains(Node* set, uint32_t element)
-{
-    Node* current = set;
-    while (current != NULL)
+  while (current != NULL)
+  {
+    if (current->elements == element)
     {
-        if (current->elements == element)
+      retVal = SET_FOUND;
+    }
+    current = current->next;
+  }
+
+  return retVal;
+}
+
+return_status_t add(Node **set, uint32_t element)
+{
+  return_status_t retVal = SET_NOK;
+  Node *newNode = NULL, *current = NULL;
+
+  if (*set != NULL)
+  {
+    newNode = (Node *)malloc(sizeof(Node));
+
+    if (newNode != NULL)
+    {
+      if (contains(*set, element) != SET_FOUND)
+      {
+        retVal = SET_OK;
+
+        current = *set;
+        while (current->next != NULL)
         {
-            return SET_FOUND;
+          current = current->next;
         }
-        current = current->next;
+
+        newNode->elements = element;
+        newNode->next = NULL;
+        current->next = newNode;
+      }
+      else
+      {
+        retVal = SET_FOUND;
+      }
     }
-    return SET_NOT_FOUND;
+    else
+    {
+      retVal = SET_ALLOC_FAIL;
+    }
+  }
+  else
+  {
+    retVal = SET_NULL_POINTER;
+  }
+
+  return retVal;
 }
 
-return_status_t add(Node** set, uint32_t element)
+return_status_t removeElement(Node **set, uint32_t element)
 {
-    if (contains(*set, element) == SET_FOUND)
-    {
-        return SET_OK; // Element already exists
-    }
-    
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    if (newNode == NULL)
-    {
-        return SET_ALLOC_FAIL;
-    }
-    newNode->elements = element;
-    newNode->next = *set;
-    *set = newNode;
-    // Increment length
-    (*set)->length++;
-    
-    return SET_OK;
-}
+  return_status_t retVal = SET_NOK;
+  Node *current = *set, *prev = NULL;
 
-return_status_t removeElement(Node** set, uint32_t element)
-{
-    Node* current = *set;
-    Node* prev = NULL;
+  if (*set != NULL)
+  {
+    retVal = SET_OK;
 
     while (current != NULL)
     {
-        if (current->elements == element)
+      if (current->elements == element)
+      {
+        if (prev == NULL)
         {
-            if (prev == NULL)
-            {
-                *set = current->next;
-            }
-            else
-            {
-                prev->next = current->next;
-            }
-            free(current);
-            // Decrement length
-            (*set)->length--;
-            return SET_OK;
+          *set = current->next;
         }
-        prev = current;
-        current = current->next;
-    }
-    return SET_NOT_FOUND;
-}
-
-uint8_t getSize(Node* set)
-{
-    return set != NULL ? set->length : 0;
-}
-
-return_status_t printSet(Node* set)
-{
-    if (set == NULL)
-    {
-        return SET_NULL_POINTER;
-    }
-    Node* current = set;
-    while (current != NULL)
-    {
-        printf("%d ", current->elements);
-        current = current->next;
-    }
-    printf("\n");
-    return SET_OK;
-}
-
-return_status_t destroySet(Node** set)
-{
-    if (*set == NULL)
-    {
-        return SET_NULL_POINTER;
-    }
-    Node* current = *set;
-    Node* next;
-    while (current != NULL)
-    {
-        next = current->next;
+        else
+        {
+          prev->next = current->next;
+        }
         free(current);
-        current = next;
+      }
+      prev = current;
+      current = current->next;
     }
-    *set = NULL;
-    return SET_OK;
+  }
+  else
+  {
+    retVal = SET_NULL_POINTER;
+  }
+
+  return retVal;
 }
 
-ArraySet *unionSet(ArraySet *set1, ArraySet *set2)
+uint32_t getSize(Node *set)
 {
-  ArraySet *unionSet;
-  uint8_t index = ZERO_INIT;
+  uint32_t count = ZERO_INIT;
+  Node *current = set;
+
+  while (current->next != NULL)
+  {
+    count++;
+    current = current->next;
+  }
+
+  return count;
+}
+
+return_status_t printSet(Node *set)
+{
+  return_status_t retVal = SET_NOK;
+  Node *current = NULL;
+
+  if (set != NULL)
+  {
+    retVal = SET_OK;
+
+    current = set;
+    while (current->next->next != NULL)
+    {
+      current = current->next;
+      printf("%d, ", current->elements);
+    }
+    printf("%d.\n", current->next->elements);
+  }
+  else
+  {
+    retVal = SET_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+return_status_t destroySet(Node **set)
+{
+  return_status_t retVal = SET_NOK;
+
+  if (*set != NULL)
+  {
+    retVal = SET_OK;
+
+    Node *current = *set;
+    Node *next;
+
+    while (current != NULL)
+    {
+      next = current->next;
+      free(current);
+      current = next;
+    }
+
+    *set = NULL; // This line has no effect, as set is a local variable.
+  }
+  else
+  {
+    retVal = SET_NULL_POINTER;
+  }
+
+  return retVal;
+}
+
+Node *unionSet(Node *set1, Node *set2)
+{
+  Node *unionSet = NULL, *current = NULL;
 
   if (NULL != set1 && NULL != set2)
   {
-    unionSet = initialize();
-
-    for (index = ZERO; index < set1->length; ++index)
+    current = set1;
+    while (current != NULL)
     {
-      add(unionSet, set1->elements[index]);
+      add(&unionSet, current->elements);
+      current = current->next;
     }
 
-    for (index = ZERO; index < set2->length; ++index)
+    current = set2;
+    while (current != NULL)
     {
-      if (contains(unionSet, set2->elements[index]) != SET_FOUND)
+      if (contains(unionSet, current->elements) != SET_FOUND)
       {
-        add(unionSet, set2->elements[index]);
+        add(&unionSet, current->elements);
       }
+      current = current->next;
     }
   }
   else
@@ -150,27 +193,22 @@ ArraySet *unionSet(ArraySet *set1, ArraySet *set2)
   return unionSet;
 }
 
-ArraySet *intersectSet(ArraySet *set1, ArraySet *set2)
+Node *intersectSet(Node *set1, Node *set2)
 {
-  ArraySet *interSect;
-  uint8_t index = ZERO_INIT;
+  Node *interSect = NULL, *current = NULL;
 
   if (NULL != set1 && NULL != set2)
   {
-    if (getSize(set1) == ZERO)
+    if (getSize(set1) != 0)
     {
-      return NULL;
-    }
-    else
-    {
-      interSect = initialize();
-
-      for (index = ZERO; index < set2->length; ++index)
+      current = set2;
+      while (current != NULL)
       {
-        if (contains(set1, set2->elements[index]) == SET_FOUND)
+        if (contains(set1, current->elements) == SET_FOUND)
         {
-          add(interSect, set2->elements[index]);
+          add(&interSect, current->elements);
         }
+        current = current->next;
       }
     }
   }
@@ -184,25 +222,20 @@ ArraySet *intersectSet(ArraySet *set1, ArraySet *set2)
 
 Node *differenceSet(Node *set1, Node *set2)
 {
-  Node *interSect;
-  uint8_t index = ZERO_INIT;
+  Node *interSect = NULL, *current = NULL;
 
   if (NULL != set1 && NULL != set2)
   {
-    if (getSize(set1) == ZERO)
+    if (getSize(set1) != 0)
     {
-      return NULL;
-    }
-    else
-    {
-      interSect = initialize();
-
-      for (index = ZERO; index < set1->length; ++index)
+      current = set1;
+      while (current != NULL)
       {
-        if (contains(set2, set1->elements[index]) == SET_NOT_FOUND)
+        if (contains(set2, current->elements) == SET_NOT_FOUND)
         {
-          add(interSect, set1->elements[index]);
+          add(&interSect, current->elements);
         }
+        current = current->next;
       }
     }
   }
@@ -216,18 +249,20 @@ Node *differenceSet(Node *set1, Node *set2)
 
 bool_t isEqual(Node *set1, Node *set2)
 {
-  uint8_t index = ZERO_INIT;
+  Node *current = NULL;
 
   if (NULL != set1 && NULL != set2)
   {
     if (getSize(set1) == getSize(set2))
     {
-      for (index = ZERO; index < set2->length; ++index)
+      current = set2;
+      while (current != NULL)
       {
-        if ((contains(set1, set2->elements[index]) == SET_NOT_FOUND))
+        if ((contains(set1, current->elements) == SET_NOT_FOUND))
         {
           return false;
         }
+        current = current->next;
       }
     }
     else
@@ -237,7 +272,7 @@ bool_t isEqual(Node *set1, Node *set2)
   }
   else
   {
-    return NULL;
+    return false;
   }
 
   return true;
@@ -246,16 +281,17 @@ bool_t isEqual(Node *set1, Node *set2)
 return_status_t clear(Node *set)
 {
   return_status_t retVal = SET_NOK;
-  uint8_t index = ZERO_INIT;
+  Node *current = NULL;
 
   if (NULL != set)
   {
     retVal = SET_OK;
 
-    for (index = ZERO; index < set->length; ++index)
+    current = set;
+    while (current != NULL)
     {
-      set->elements[index] = ZERO_INIT;
-      set->length = ZERO;
+      current->elements = ZERO_INIT;
+      current = current->next;
     }
   }
   else
@@ -268,16 +304,15 @@ return_status_t clear(Node *set)
 
 Node *copySet(Node *set)
 {
-  Node *newSet = NULL;
-  uint8_t index = ZERO_INIT;
+  Node *newSet = NULL, *current = NULL;
 
   if (NULL != set)
   {
-    newSet = initialize();
-
-    for (index = ZERO; index < set->length; ++index)
+    current = set;
+    while (current != NULL)
     {
-      add(newSet, set->elements[index]);
+      add(&newSet, current->elements);
+      current = current->next;
     }
   }
   else
@@ -290,21 +325,23 @@ Node *copySet(Node *set)
 
 bool_t isSubset(Node *set1, Node *set2)
 {
-  uint8_t index = ZERO_INIT;
+  Node *current = NULL;
 
   if (NULL != set1 && NULL != set2)
   {
-    for (index = ZERO; index < set1->length; ++index)
+    current = set1;
+    while (current != NULL)
     {
-      if (contains(set2, set1->elements[index]) == SET_NOT_FOUND)
+      if (contains(set2, current->elements) == SET_NOT_FOUND)
       {
         return false;
       }
+      current = current->next;
     }
   }
   else
   {
-    return NULL;
+    return false;
   }
 
   return true;
@@ -312,19 +349,18 @@ bool_t isSubset(Node *set1, Node *set2)
 
 Node *complementSet(Node *set, Node *universeSet)
 {
-  Node *compSet = NULL;
-  uint8_t index = ZERO_INIT;
+  Node *compSet = NULL, *current = NULL;
 
   if (NULL != set && NULL != universeSet)
   {
-    compSet = initialize();
-
-    for (index = ZERO; index < set->length; ++index)
+    current = set;
+    while (current != NULL)
     {
-      if (contains(universeSet, set->elements[index]) == SET_NOT_FOUND)
+      if (contains(universeSet, current->elements) == SET_NOT_FOUND)
       {
-        add(compSet, set->elements[index]);
+        add(&compSet, current->elements);
       }
+      current = current->next;
     }
   }
   else
@@ -346,7 +382,7 @@ return_status_t addMultiple(Node *set, uint32_t elements[], uint8_t numElements)
 
     for (index = 0; index < numElements; ++index)
     {
-      add(set, elements[index]);
+      add(&set, elements[index]);
     }
   }
   else
@@ -368,7 +404,7 @@ return_status_t removeMultiple(Node *set, uint32_t elements[], uint8_t numElemen
 
     for (index = 0; index < numElements; ++index)
     {
-      removeElement(set, elements[index]);
+      removeElement(&set, elements[index]);
     }
   }
   else
