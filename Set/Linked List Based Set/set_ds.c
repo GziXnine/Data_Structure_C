@@ -20,37 +20,47 @@ return_status_t contains(Node *set, uint32_t element)
 return_status_t add(Node **set, uint32_t element)
 {
   return_status_t retVal = SET_NOK;
-  Node *newNode = NULL, *current = NULL;
+  Node *current = NULL, *new_node = NULL;
 
-  if (*set != NULL)
+  if (set != NULL)
   {
-    newNode = (Node *)malloc(sizeof(Node));
+    retVal = SET_NOK;
 
-    if (newNode != NULL)
+    current = *set;
+    while (current != NULL)
     {
-      if (contains(*set, element) != SET_FOUND)
-      {
-        retVal = SET_OK;
-
-        current = *set;
-        while (current->next != NULL)
-        {
-          current = current->next;
-        }
-
-        newNode->elements = element;
-        newNode->next = NULL;
-        current->next = newNode;
-      }
-      else
+      if (current->elements == element)
       {
         retVal = SET_FOUND;
+        return retVal;
       }
+      current = current->next;
     }
-    else
+
+    new_node = (Node *)malloc(sizeof(Node));
+    if (new_node == NULL)
     {
-      retVal = SET_ALLOC_FAIL;
+      retVal = SET_NOK;
+      return retVal;
     }
+    new_node->elements = element;
+    new_node->next = NULL;
+
+    if (*set == NULL)
+    {
+      *set = new_node;
+      retVal = SET_OK;
+      return retVal;
+    }
+
+    current = *set;
+    while (current->next != NULL)
+    {
+      current = current->next;
+    }
+
+    current->next = new_node;
+    retVal = SET_OK;
   }
   else
   {
@@ -97,10 +107,15 @@ return_status_t removeElement(Node **set, uint32_t element)
 
 uint32_t getSize(Node *set)
 {
-  uint32_t count = ZERO_INIT;
+  if (set == NULL)
+  {
+    return 0;
+  }
+
+  uint32_t count = 0;
   Node *current = set;
 
-  while (current->next != NULL)
+  while (current != NULL)
   {
     count++;
     current = current->next;
@@ -111,27 +126,26 @@ uint32_t getSize(Node *set)
 
 return_status_t printSet(Node *set)
 {
-  return_status_t retVal = SET_NOK;
-  Node *current = NULL;
-
-  if (set != NULL)
+  if (set == NULL)
   {
-    retVal = SET_OK;
+    printf("Set is empty.\n");
+    return SET_EMPTY;
+  }
 
-    current = set;
-    while (current->next->next != NULL)
+  Node *current = set;
+
+  while (current != NULL)
+  {
+    printf("%d", current->elements);
+    if (current->next != NULL)
     {
-      current = current->next;
-      printf("%d, ", current->elements);
+      printf(", ");
     }
-    printf("%d.\n", current->next->elements);
+    current = current->next;
   }
-  else
-  {
-    retVal = SET_NULL_POINTER;
-  }
+  printf(".\n");
 
-  return retVal;
+  return SET_OK;
 }
 
 return_status_t destroySet(Node **set)
