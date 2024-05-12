@@ -21,7 +21,7 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
   
 ### Hash Table
 - **Direct Addressing Table**
-- **Open Addressing**
+- [**Open Addressing**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Hash%20Table/Open%20Addressing)
 
 ### Heap
 - **Binary Heap**
@@ -30,11 +30,11 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 - **Binomial Heap**
 
 ### Linked List
-- [**Array-based Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Array%20Based%20Linked%20List)
-- **Circular Linked List**
+- [**Array Based Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Array%20Based%20Linked%20List)
+- [**Circular Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Circular%20Linked%20List)
 - [**Doubly Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Doubly%20Linked%20List)
 - [**Singly Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Singly%20Linked%20List)
-- **Sorted Linked List**
+- [**Sorted Linked List**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Linked%20List/Sorted%20Linked%20List)
 
 ### Map
 - **Hash Map**
@@ -43,21 +43,21 @@ Welcome to the Data Structures and Algorithms repository! This repository serves
 ### Matrix
   - [**Dynamic 2D Array**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Matrix)
 
-
 ### Queue
-- [**Array-based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Array-based%20Queue)
+- [**Array Based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Array-based%20Queue)
 - [**Circular Queues**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Circular%20Queue)
-- [**Linked List-based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Linked%20List%20Based%20Queue)
+- [**Linked List Based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Linked%20List%20Based%20Queue)
 - [**Two Stacks Based Queue**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Queue/Two%20Stacks%20Based%20Queue)
   
 ### Set
 - **Hash Set**
-- **Tree Set**
-- **Linked List Set**
+- [**Array Based Set**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Set/Array%20Based%20Set)
+- **Sorted Array Set**
+- [**Linked List Set**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Set/Linked%20List%20Based%20Set)
 - **Tree Set**
   
 ### Stack
-- [**Array-based Stack**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Stack/Array%20Based%20Stack)
+- [**Array Based Stack**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Stack/Array%20Based%20Stack)
 - [**Dynamic Stack**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Stack/Dynamic%20Stack)
 - [**Linked List-based Stack**](https://github.com/AllamF5J/Data_Structure_C/tree/main/Stack/Linked%20List%20Based%20Stack)
 
